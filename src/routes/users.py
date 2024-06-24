@@ -1,21 +1,14 @@
-"""
-This module contains the routes for the users endpoints.
-"""
+from flask import Blueprint, request, jsonify
+from src.controllers.users import get_users, create_user
 
-from flask import Blueprint
-from src.controllers.users import (
-    create_user,
-    delete_user,
-    get_user_by_id,
-    get_users,
-    update_user,
-)
+users_bp = Blueprint('users', __name__, url_prefix='/users')
 
-users_bp = Blueprint("users", __name__, url_prefix="/users")
+@users_bp.route('/', methods=['GET'], strict_slashes=False)
+def users_get():
+    return jsonify(get_users())
 
-users_bp.route("/", methods=["GET"])(get_users)
-users_bp.route("/", methods=["POST"])(create_user)
-
-users_bp.route("/<user_id>", methods=["GET"])(get_user_by_id)
-users_bp.route("/<user_id>", methods=["PUT"])(update_user)
-users_bp.route("/<user_id>", methods=["DELETE"])(delete_user)
+@users_bp.route('/', methods=['POST'], strict_slashes=False)
+def users_post():
+    data = request.get_json()
+    create_user(data)
+    return jsonify({"message": "User created successfully"}), 201
