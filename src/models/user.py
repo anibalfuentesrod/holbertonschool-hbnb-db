@@ -9,7 +9,6 @@ class User(db.Model):
     password = Column(String(120), nullable=False)
     is_admin = Column(Integer, default=0)
     places = relationship("Place", back_populates="host")
-    reviews = relationship("Review", back_populates="user")
 
     def to_dict(self):
         return {
