@@ -1,14 +1,8 @@
-from config import db
+from .database import db
 
 class City(db.Model):
-    __tablename__ = 'cities'
-    id = db.Column(db.String(36), primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
-    country_code = db.Column(db.String(10), db.ForeignKey('countries.code'), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'country_code': self.country_code
-        }
+    places = db.relationship('Place', backref='city', lazy=True)
