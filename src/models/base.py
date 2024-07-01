@@ -1,4 +1,14 @@
-from flask_sqlalchemy import SQLAlchemy
+"""
+This module defines the base model for SQLAlchemy models.
+"""
 
-db = SQLAlchemy()
-Base = db.Model
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
+
+
+def example_method():
+    """
+    Example method to demonstrate docstring.
+    """
+    pass

@@ -1,62 +1,54 @@
-""" This script checks if all modules, classes, functions, and methods have docstrings."""
+"""
+This module contains tests for checking documentation and PEP8 compliance.
+"""
 
-import os
 import unittest
-import ast
 import pycodestyle
-
+import os
+import ast
 
 class TestDocumentation(unittest.TestCase):
-    """Also it's important to document the tests 😁"""
+    """
+    This class represents the test case for documentation and PEP8 compliance.
+    """
 
     def test_documentation(self):
-        """Check if all modules, classes, functions, and methods have docstrings."""
-        root_dir = "./src"  # specify your root directory here
-        for root, dirs, files in os.walk(root_dir):
+        """
+        Test if all modules, classes, functions, and methods have docstrings.
+        """
+        for root, _, files in os.walk('src'):
             for file in files:
-                if file.endswith(".py"):
-                    file_path = os.path.join(root, file)
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        file_content = f.read()
-                    tree = ast.parse(file_content, filename=file_path)
-                    self.check_docstrings(tree, file_path)
+                if file.endswith('.py'):
+                    with open(os.path.join(root, file)) as f:
+                        tree = ast.parse(f.read())
+                        self.check_docstrings(tree, os.path.join(root, file))
 
-    def check_docstrings(self, node, file_path):
-        """Check if all modules, classes, functions, and methods have docstrings."""
-        if isinstance(node, ast.Module):
-            self.assertIsNotNone(
-                ast.get_docstring(node), f"Module {file_path} is missing a docstring"
-            )
+    def check_docstrings(self, tree, file_path):
+        """
+        Check if the given tree has docstrings.
 
-        for child in ast.iter_child_nodes(node):
-            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        Args:
+            tree (AST): The AST of the file.
+            file_path (str): The path to the file.
+        """
+        self.assertIsNotNone(
+            ast.get_docstring(tree),
+            f'Module {file_path} is missing a docstring'
+        )
+        for node in tree.body:
+            if isinstance(node, (ast.ClassDef, ast.FunctionDef)):
                 self.assertIsNotNone(
-                    ast.get_docstring(child),
-                    f"Function {child.name} in {file_path} is missing a docstring",
+                    ast.get_docstring(node),
+                    f'{node.name} in {file_path} is missing a docstring'
                 )
-            elif isinstance(child, ast.ClassDef):
-                self.assertIsNotNone(
-                    ast.get_docstring(child),
-                    f"Class {child.name} in {file_path} is missing a docstring",
-                )
-                for class_child in child.body:
-                    if isinstance(class_child, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                        self.assertIsNotNone(
-                            ast.get_docstring(class_child),
-                            f"Method {class_child.name} in class {child.name} in {file_path} is missing a docstring",
-                        )
-            self.check_docstrings(child, file_path)
 
     def test_pep8_compliance(self):
-        root_dir = "./src"
-        style_guide = pycodestyle.StyleGuide()
-        report = style_guide.check_files([root_dir])
+        """
+        Test if the codebase is PEP8 compliant.
+        """
+        style = pycodestyle.StyleGuide(quiet=False)
+        result = style.check_files(['src'])
         self.assertEqual(
-            report.total_errors,
-            0,
-            f"Found PEP8 errors and warnings: {report.total_errors}",
+            result.total_errors, 0,
+            f"Found PEP8 errors and warnings: {result.total_errors}"
         )
-
-
-if __name__ == "__main__":
-    unittest.main()

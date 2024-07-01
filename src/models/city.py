@@ -1,8 +1,29 @@
-from .database import db
+"""
+This module defines the City model.
+"""
 
-class City(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    country_id = db.Column(db.Integer, db.ForeignKey('country.id'))
+from sqlalchemy import Column, String, ForeignKey
+from .base import Base
 
-    places = db.relationship('Place', backref='city', lazy=True)
+
+class City(Base):
+    """
+    Represents a City in the application.
+
+    Attributes:
+        name (str): The name of the city.
+        country_id (int): The ID of the country the city belongs to.
+    """
+    __tablename__ = 'cities'
+
+    name = Column(String(128), nullable=False)
+    country_id = Column(String(60), ForeignKey('countries.id'), nullable=False)
+
+    def __repr__(self):
+        """
+        Provides a string representation of the City object.
+
+        Returns:
+            str: The string representation of the City object.
+        """
+        return f'<City(name={self.name}, country_id={self.country_id})>'

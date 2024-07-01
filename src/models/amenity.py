@@ -1,16 +1,27 @@
-from .database import db
+"""
+This module defines the Amenity model.
+"""
 
-class Amenity(db.Model):
-    __tablename__ = 'amenity'
+from sqlalchemy import Column, String
+from .base import Base
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
 
-    # Remove or comment out the relationship that references place_amenity
-    # places = db.relationship('Place', secondary='place_amenity', back_populates='amenities')
+class Amenity(Base):
+    """
+    Represents an Amenity in the application.
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-        }
+    Attributes:
+        name (str): The name of the amenity.
+    """
+    __tablename__ = 'amenities'
+
+    name = Column(String(128), nullable=False)
+
+    def __repr__(self):
+        """
+        Provides a string representation of the Amenity object.
+
+        Returns:
+            str: The string representation of the Amenity object.
+        """
+        return f'<Amenity(name={self.name})>'

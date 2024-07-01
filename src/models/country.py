@@ -1,7 +1,27 @@
-from .database import db
+"""
+This module defines the Country model.
+"""
 
-class Country(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+from sqlalchemy import Column, String
+from .base import Base
 
-    cities = db.relationship('City', backref='country', lazy=True)
+
+class Country(Base):
+    """
+    Represents a Country in the application.
+
+    Attributes:
+        name (str): The name of the country.
+    """
+    __tablename__ = 'countries'
+
+    name = Column(String(128), nullable=False)
+
+    def __repr__(self):
+        """
+        Provides a string representation of the Country object.
+
+        Returns:
+            str: The string representation of the Country object.
+        """
+        return f'<Country(name={self.name})>'

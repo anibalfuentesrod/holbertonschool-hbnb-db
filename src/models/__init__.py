@@ -1,14 +1,12 @@
+"""init th file app haha"""
 from flask_sqlalchemy import SQLAlchemy
-
+from .user import User
 db = SQLAlchemy()
 
-from .user import User
-from .place import Place
-from .review import Review
 
 def init_app(app):
+    """and in here tooo hahh"""
     db.init_app(app)
-    with app.app_context():
-        db.create_all()
 
-__all__ = ['db', 'User', 'Place', 'Review']
+
+__all__ = ['User']

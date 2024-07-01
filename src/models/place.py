@@ -1,20 +1,28 @@
-from .database import db
+"""
+Place Model.
+"""
 
-class Place(db.Model):
-    __tablename__ = 'place'
+from sqlalchemy import Column, Integer, String, ForeignKey
+from .database import Base
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    host_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
-    price = db.Column(db.Integer, nullable=False)
-    
-    # Remove or comment out the relationship that references place_amenity
-    # amenities = db.relationship('Amenity', secondary='place_amenity', back_populates='places')
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'host_id': self.host_id,
-            'price': self.price,
-        }
+class Place(Base):
+    """
+    Represents a place in the database.
+    """
+    __tablename__ = 'places'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    description = Column(String)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    city_id = Column(Integer, ForeignKey('cities.id'))
+
+    def __init__(self, name, description, user_id, city_id):
+        """
+        Initializes a new place.
+        """
+        self.name = name
+        self.description = description
+        self.user_id = user_id
+        self.city_id = city_id
